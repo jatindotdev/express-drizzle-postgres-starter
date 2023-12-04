@@ -2,9 +2,9 @@ import {
   handleAddUser,
   handleDeleteUser,
   handleGetUser,
+  handleUpdateUser,
   handleUserLogin,
   handleVerifyUser,
-  handleUpdateUser,
 } from "controllers/user-controllers";
 import { Router } from "express";
 import { authenticate } from "middlewares/auth";

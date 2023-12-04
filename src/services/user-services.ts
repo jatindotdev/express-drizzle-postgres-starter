@@ -61,7 +61,7 @@ export const verifyUser = async (email: string, code: string): Promise<boolean> 
 };
 
 export const deleteUser = async (email: string) => {
-  const user = await getUserByUserId(email);
+  const user = await getUserByEmail(email);
 
   if (!user) {
     throw new BackendError("User not found", 404);
