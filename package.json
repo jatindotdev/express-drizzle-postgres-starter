@@ -6,8 +6,8 @@
     "dev": "tsx watch src/server.ts",
     "generate": "drizzle-kit generate:pg",
     "migrate": "tsx src/migrate.ts",
-    "lint": "eslint \"src/**/*.(ts|tsx)\"",
-    "lint:fix": "eslint --fix \"src/**/*.(ts|tsx)\"",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
+    "lint:fix": "eslint --fix \"src/**/*.{ts,tsx}\"",
     "format": "prettier --write \"src/**/*.(ts|tsx)\""
   },
   "dependencies": {
