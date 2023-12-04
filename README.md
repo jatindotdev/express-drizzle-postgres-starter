@@ -27,6 +27,11 @@ if `email` is updated, the user will be unverified and a new verification email 
 
 Creates a new user. Requires `name`, `email` and `password` in the request body.
 
+<img height="auto" width="750" src="https://github.com/jatindotdev/express-drizzle-postgres-starter/assets/59236972/f31e266e-68c3-44be-a0b2-d07c15ee83c6" />
+
+<img height="auto" width="750" src="https://github.com/jatindotdev/express-drizzle-postgres-starter/assets/59236972/f3763930-d88c-471c-85f3-eb7dfba350e5" />
+
+
 ### `GET /user/verify`
 
 Verifies the user. Requires `token` and `email` in the query string.
