@@ -1,5 +1,3 @@
-import { render } from "@react-email/render";
-import type { NextFunction, Request, Response } from "express";
 import {
   DeleteUserSchemaType,
   LoginSchemaType,
@@ -7,10 +5,7 @@ import {
   UpdateUserSchemaType,
   User,
   VerifyUserSchemaType,
-} from "schema/user";
-import { UserVerified } from "templates/user-verified";
-import { BackendError } from "utils/errors";
-import generateToken from "utils/jwt";
+} from "@/schema/user";
 import {
   addUser,
   deleteUser,
@@ -18,8 +13,13 @@ import {
   sendVerificationEmail,
   updateUser,
   verifyUser,
-} from "../services/user-services";
-import { API_BASE_URL } from "../utils/config";
+} from "@/services/user-services";
+import { UserVerified } from "@/templates/user-verified";
+import { API_BASE_URL } from "@/utils/config";
+import { BackendError } from "@/utils/errors";
+import generateToken from "@/utils/jwt";
+import { render } from "@react-email/render";
+import type { NextFunction, Request, Response } from "express";
 
 export const handleUserLogin = async (req: Request, res: Response, next: NextFunction) => {
   try {

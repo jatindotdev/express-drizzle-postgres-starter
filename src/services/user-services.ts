@@ -1,14 +1,14 @@
+import { UpdateUserSchemaType, users, type NewUser, type User } from "@/schema/user";
+import { VerificationEmail } from "@/templates/verification-email";
+import { API_BASE_URL, FROM_EMAIL, FROM_NAME } from "@/utils/config";
+import { db } from "@/utils/db";
+import { getEmailClient } from "@/utils/email";
+import { BackendError } from "@/utils/errors";
+import { sha256 } from "@/utils/hash";
 import { SendEmailCommand } from "@aws-sdk/client-ses";
 import { render } from "@react-email/render";
 import crypto from "crypto";
 import { eq } from "drizzle-orm";
-import { BackendError } from "utils/errors";
-import { sha256 } from "utils/hash";
-import { UpdateUserSchemaType, users, type NewUser, type User } from "../schema/user";
-import { VerificationEmail } from "../templates/verification-email";
-import { API_BASE_URL, FROM_EMAIL, FROM_NAME } from "../utils/config";
-import { db } from "../utils/db";
-import { getEmailClient } from "../utils/email";
 
 export const getUserByUserId = async (userId: string): Promise<User | null> => {
   const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);

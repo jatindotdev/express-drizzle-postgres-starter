@@ -1,5 +1,5 @@
+import { deleteAllUnverifiedUsers, getAllUsers, getAllVerifiedUsers } from "@/services/admin-services";
 import type { Request, Response } from "express";
-import { deleteAllUnverifiedUsers, getAllVerifiedUsers, getAllUsers } from "../services/admin-services";
 
 export const handleGetAllVerifiedUsers = async (req: Request, res: Response) => {
   try {

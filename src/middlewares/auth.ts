@@ -1,7 +1,7 @@
+import { getUserByUserId } from "@/services/user-services";
+import { BackendError } from "@/utils/errors";
+import { verifyToken } from "@/utils/jwt";
 import { NextFunction, Request, Response } from "express";
-import { getUserByUserId } from "services/user-services";
-import { BackendError } from "utils/errors";
-import { verifyToken } from "utils/jwt";
 
 export const authenticate = (
   { verifyAdmin } = {

@@ -1,10 +1,10 @@
-import { Router } from "express";
-import { authenticate } from "middlewares/auth";
 import {
   handleDeleteAllUnverifiedUsers,
   handleGetAllUsers,
   handleGetAllVerifiedUsers,
-} from "../controllers/admin-controllers";
+} from "@/controllers/admin-controllers";
+import { authenticate } from "@/middlewares/auth";
+import { Router } from "express";
 
 export function adminRoutes() {
   const router = Router();
