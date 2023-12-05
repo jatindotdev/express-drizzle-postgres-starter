@@ -2,7 +2,10 @@
   "compilerOptions": {
     "target": "ES2017",
     "module": "CommonJS",
-    "baseUrl": "./src",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    },
     "outDir": "./build",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -12,6 +15,7 @@
     "alwaysStrict": true,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "plugins": [{ "transform": "typescript-transform-paths" }]
   }
 }
