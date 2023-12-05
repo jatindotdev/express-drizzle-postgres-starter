@@ -19,4 +19,4 @@ jobs:
           run_install: false
 
       - name: Prettier
-        run: pnpx prettier --check \"src/**/*.(ts|tsx)\"
+        run: pnpx prettier --check "src/**/*.{ts,tsx}"
