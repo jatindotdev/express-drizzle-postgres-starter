@@ -15,5 +15,5 @@ jobs:
       - uses: oven-sh/setup-bun@v1
         name: Setup bun
 
-      - name: Eslint
-        run: bunx eslint \"src/**/*.{ts,tsx}\"
+      - name: Lint
+        run: bunx eslint "src/**/*.{ts,tsx}"
