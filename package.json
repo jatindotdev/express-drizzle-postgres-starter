@@ -8,7 +8,8 @@
     "migrate": "tsx src/migrate.ts",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "lint:fix": "eslint --fix \"src/**/*.{ts,tsx}\"",
-    "format": "prettier --write \"src/**/*.(ts|tsx)\"",
+    "format": "prettier --check \"src/**/*.(ts|tsx)\"",
+    "format:fix": "prettier --write \"src/**/*.(ts|tsx)\"",
     "prepare": "ts-patch install -s"
   },
   "dependencies": {
