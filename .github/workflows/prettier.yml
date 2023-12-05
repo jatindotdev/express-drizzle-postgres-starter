@@ -20,4 +20,4 @@ jobs:
           run_install: false
 
       - name: Prettier
-        run: pnpm run format
+        run: pnpx prettier --check \"src/**/*.(ts|tsx)\"

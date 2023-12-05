@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  esLint:
+  eslint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
