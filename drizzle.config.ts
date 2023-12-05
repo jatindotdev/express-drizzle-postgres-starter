@@ -1,5 +1,5 @@
+import { DB_URL } from "@/utils/config";
 import type { Config } from "drizzle-kit";
-import { DB_URL } from "utils/config";
 
 export default {
   schema: "./src/schema/*",

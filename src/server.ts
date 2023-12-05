@@ -1,9 +1,9 @@
+import { routes } from "@/routes/routes";
+import { errorHandler, handle404Error } from "@/utils/errors";
 import cors from "cors";
 import express from "express";
 import rateLimit from "express-rate-limit";
 import morgan from "morgan";
-import { routes } from "routes/routes";
-import { errorHandler, handle404Error } from "utils/errors";
 import { PORT } from "./utils/config";
 
 const app = express();

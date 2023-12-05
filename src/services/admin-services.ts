@@ -1,6 +1,6 @@
+import { users } from "@/schema/user";
+import { db } from "@/utils/db";
 import { and, eq } from "drizzle-orm";
-import { users } from "../schema/user";
-import { db } from "../utils/db";
 
 export const getAllVerifiedUsers = async () => {
   return await db

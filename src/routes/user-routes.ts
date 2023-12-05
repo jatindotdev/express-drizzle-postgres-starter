@@ -5,11 +5,11 @@ import {
   handleUpdateUser,
   handleUserLogin,
   handleVerifyUser,
-} from "controllers/user-controllers";
+} from "@/controllers/user-controllers";
+import { authenticate } from "@/middlewares/auth";
+import { validateRequest } from "@/middlewares/validator";
+import { addUserSchema, deleteUserSchema, loginSchema, verifyUserSchema } from "@/schema/user";
 import { Router } from "express";
-import { authenticate } from "middlewares/auth";
-import { validateRequest } from "middlewares/validator";
-import { addUserSchema, deleteUserSchema, loginSchema, verifyUserSchema } from "schema/user";
 
 export function userRoutes() {
   const router = Router();

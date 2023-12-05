@@ -1,6 +1,6 @@
+import { handleValidationError } from "@/utils/errors";
 import type { NextFunction, Request, Response } from "express";
 import { z } from "zod";
-import { handleValidationError } from "../utils/errors";
 
 type RequestLocation = "body" | "params" | "query";
 

@@ -1,5 +1,5 @@
+import { JWT_SECRET } from "@/utils/config";
 import JWT from "jsonwebtoken";
-import { JWT_SECRET } from "../utils/config";
 import { BackendError } from "./errors";
 
 const JWT_CONFIG: JWT.SignOptions = {
