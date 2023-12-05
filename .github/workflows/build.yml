@@ -4,6 +4,10 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - "src/**"
+      - "package.json"
+      - "tsconfig.json"
 
 jobs:
   build:
