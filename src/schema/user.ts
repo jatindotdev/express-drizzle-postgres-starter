@@ -10,6 +10,7 @@ export const users = pgTable("users", {
   isAdmin: boolean("is_admin").notNull().default(false),
   password: text("password").notNull(),
   isVerified: boolean("is_verified").notNull().default(false),
+  salt: text("salt").notNull(),
   code: text("code").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

@@ -7,6 +7,7 @@ import { BackendError } from "@/utils/errors";
 import { sha256 } from "@/utils/hash";
 import { SendEmailCommand } from "@aws-sdk/client-ses";
 import { render } from "@react-email/render";
+import argon2 from "argon2";
 import crypto from "crypto";
 import { eq } from "drizzle-orm";
 
@@ -21,11 +22,23 @@ export const getUserByEmail = async (email: string): Promise<User | null> => {
 };
 
 export const addUser = async (user: NewUser) => {
+  const { password, ...userDetails } = user;
+
+  const salt = crypto.randomBytes(32);
   const code = crypto.randomBytes(32).toString("hex");
   const hashedCode = sha256.hash(code);
+  const hashedPassword = await argon2.hash(password, {
+    salt,
+  });
+
   const [newUser] = await db
     .insert(users)
-    .values({ ...user, code: hashedCode })
+    .values({
+      ...userDetails,
+      password: hashedPassword,
+      code: hashedCode,
+      salt: salt.toString("hex"),
+    })
     .returning({
       id: users.id,
       name: users.name,
