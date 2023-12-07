@@ -19,6 +19,7 @@ import { API_BASE_URL } from "@/utils/config";
 import { BackendError } from "@/utils/errors";
 import generateToken from "@/utils/jwt";
 import { render } from "@react-email/render";
+import argon2 from "argon2";
 import type { NextFunction, Request, Response } from "express";
 
 export const handleUserLogin = async (req: Request, res: Response, next: NextFunction) => {
@@ -30,7 +31,9 @@ export const handleUserLogin = async (req: Request, res: Response, next: NextFun
       throw new BackendError("User not found", 404);
     }
 
-    const matchPassword = password === user.password;
+    const matchPassword = await argon2.verify(user.password, password, {
+      salt: Buffer.from(user.salt, "hex"),
+    });
     if (!matchPassword) {
       throw new BackendError("Invalid password", 401);
     }
