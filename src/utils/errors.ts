@@ -1,3 +1,4 @@
+import consola from "consola";
 import { NextFunction, Request, Response } from "express";
 import { PostgresError } from "postgres";
 import { ZodError } from "zod";
@@ -32,6 +33,7 @@ export const errorHandler = (error: unknown, req: Request, res: Response, next: 
   let resMessage: string | undefined;
   let message: string | undefined;
   let code: number | undefined;
+  const ip = req.ip;
 
   if (error instanceof BackendError) {
     message = error.message;
@@ -57,7 +59,7 @@ export const errorHandler = (error: unknown, req: Request, res: Response, next: 
     code = 500;
   }
 
-  console.log(`[${method}] ${url} | ${code} - ${message}`);
+  consola.error(`${ip} [${method}] ${url} ${code} - ${message}`);
 
   res.status(code).json({
     success: false,

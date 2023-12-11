@@ -17,6 +17,7 @@
     "@react-email/components": "^0.0.12",
     "@react-email/render": "^0.0.10",
     "argon2": "^0.31.2",
+    "consola": "^3.2.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "drizzle-orm": "^0.29.1",
@@ -27,6 +28,7 @@
     "morgan": "^1.10.0",
     "postgres": "^3.4.3",
     "react": "^18.2.0",
+    "request-ip": "^3.3.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
@@ -37,6 +39,7 @@
     "@types/node": "^20.10.3",
     "@types/pg": "^8.10.9",
     "@types/react": "^18.2.41",
+    "@types/request-ip": "^0.0.41",
     "@typescript-eslint/eslint-plugin": "^6.13.1",
     "@typescript-eslint/parser": "^6.13.1",
     "drizzle-kit": "^0.20.6",
