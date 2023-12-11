@@ -10,7 +10,8 @@
     "lint:fix": "eslint --fix \"src/**/*.{ts,tsx}\"",
     "format": "prettier --check \"src/**/*.{ts,tsx}\"",
     "format:fix": "prettier --write \"src/**/*.{ts,tsx}\"",
-    "prepare": "ts-patch install -s"
+    "prepare": "ts-patch install -s",
+    "check": "pnpm lint && pnpm format && pnpm build"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.465.0",
