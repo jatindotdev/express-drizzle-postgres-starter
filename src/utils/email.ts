@@ -1,5 +1,5 @@
-import { SESClient } from "@aws-sdk/client-ses";
-import { AWS_ACCESS_KEY, AWS_REGION, AWS_SECRET_ACCESS_KEY } from "./config";
+import { SESClient } from '@aws-sdk/client-ses';
+import { AWS_ACCESS_KEY, AWS_REGION, AWS_SECRET_ACCESS_KEY } from './config';
 
 let client: SESClient;
 

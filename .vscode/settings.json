@@ -1,0 +1,41 @@
+{
+  "editor.defaultFormatter": "biomejs.biome",
+
+  "[javascript]": {
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+
+  "[typescript]": {
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  // Avoid relative imports
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+
+  "[typescriptreact]": {
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+
+  "[javascriptreact]": {
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+
+  "[less]": {
+    "editor.formatOnSave": true
+  },
+
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+    },
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+
+  "[html]": {
+    "editor.formatOnSave": false
+  },
+}

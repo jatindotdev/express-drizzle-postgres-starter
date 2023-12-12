@@ -1,20 +1,20 @@
-import { handleValidationError } from "@/utils/errors";
-import type { NextFunction, Request, Response } from "express";
-import { z } from "zod";
+import { handleValidationError } from '@/utils/errors';
+import type { NextFunction, Request, Response } from 'express';
+import { z } from 'zod';
 
-type RequestLocation = "body" | "params" | "query";
+type RequestLocation = 'body' | 'params' | 'query';
 
 export const validateRequest = (location: RequestLocation, schema: z.AnyZodObject) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     let data: z.infer<typeof schema>;
     switch (location) {
-      case "body":
+      case 'body':
         data = req.body;
         break;
-      case "params":
+      case 'params':
         data = req.params;
         break;
-      case "query":
+      case 'query':
         data = req.query;
         break;
     }
@@ -28,7 +28,7 @@ export const validateRequest = (location: RequestLocation, schema: z.AnyZodObjec
         res.status(400).json({ error });
       } else {
         res.status(500).json({
-          error: "Something went wrong",
+          error: 'Something went wrong',
         });
       }
     }

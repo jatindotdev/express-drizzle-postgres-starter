@@ -1,16 +1,16 @@
-import consola from "consola";
-import { NextFunction, Request, Response } from "express";
-import { PostgresError } from "postgres";
-import { ZodError } from "zod";
+import consola from 'consola';
+import { NextFunction, Request, Response } from 'express';
+import { PostgresError } from 'postgres';
+import { ZodError } from 'zod';
 
 export const handleValidationError = (err: ZodError): string => {
   const [firstError] = err.errors;
-  if (firstError.message.includes("Required")) {
-    const missingParams = err.errors.map(error => error.path).join(", ");
+  if (firstError.message.includes('Required')) {
+    const missingParams = err.errors.map(error => error.path).join(', ');
     return `Missing required params: ${missingParams}`;
   }
 
-  if (firstError.message.includes("Invalid")) {
+  if (firstError.message.includes('Invalid')) {
     const [first] = err.errors;
     return `Invalid params: ${first.path}`;
   }
@@ -27,7 +27,12 @@ export class BackendError extends Error {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const errorHandler = (error: unknown, req: Request, res: Response, next: NextFunction) => {
+export const errorHandler = (
+  error: unknown,
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
   const url = req.originalUrl;
   const method = req.method;
   let resMessage: string | undefined;
@@ -43,7 +48,7 @@ export const errorHandler = (error: unknown, req: Request, res: Response, next: 
 
   if (error instanceof PostgresError) {
     message = error.message;
-    resMessage = "Something went wrong and we are working on it";
+    resMessage = 'Something went wrong and we are working on it';
     code = 500;
   }
 
@@ -54,8 +59,8 @@ export const errorHandler = (error: unknown, req: Request, res: Response, next: 
   }
 
   if (!message || !code) {
-    message = error instanceof Error ? error.message : "Something went wrong";
-    resMessage = "Something went wrong and we are working on it";
+    message = error instanceof Error ? error.message : 'Something went wrong';
+    resMessage = 'Something went wrong and we are working on it';
     code = 500;
   }
 
@@ -67,9 +72,9 @@ export const errorHandler = (error: unknown, req: Request, res: Response, next: 
   });
 };
 
-export const handle404Error = (req: Request, res: Response) => {
+export const handle404Error = (_req: Request, res: Response) => {
   res.status(404).json({
     success: false,
-    message: "Route not found",
+    message: 'Route not found',
   });
 };

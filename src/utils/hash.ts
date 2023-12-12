@@ -1,6 +1,7 @@
-import crypto from "crypto";
+import crypto from 'crypto';
 
 export const sha256 = {
-  hash: (code: string) => crypto.createHash("sha256").update(code).digest("hex"),
-  verify: (code: string, hashedCode: string) => crypto.createHash("sha256").update(code).digest("hex") === hashedCode,
+  hash: (code: string) => crypto.createHash('sha256').update(code).digest('hex'),
+  verify: (code: string, hashedCode: string) =>
+    crypto.createHash('sha256').update(code).digest('hex') === hashedCode,
 };

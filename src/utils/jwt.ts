@@ -1,9 +1,9 @@
-import { JWT_SECRET } from "@/utils/config";
-import JWT from "jsonwebtoken";
-import { BackendError } from "./errors";
+import { JWT_SECRET } from '@/utils/config';
+import JWT from 'jsonwebtoken';
+import { BackendError } from './errors';
 
 const JWT_CONFIG: JWT.SignOptions = {
-  expiresIn: "10m",
+  expiresIn: '10m',
 };
 
 export default function generateToken(userId: string): string {
@@ -17,9 +17,9 @@ export function verifyToken(token: string) {
     return data as { userId: string };
   } catch (err) {
     if (err instanceof JWT.TokenExpiredError) {
-      throw new BackendError("Token expired", 401);
+      throw new BackendError('Token expired', 401);
     }
 
-    throw new BackendError("Invalid token", 401);
+    throw new BackendError('Invalid token', 401);
   }
 }

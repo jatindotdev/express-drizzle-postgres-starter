@@ -5,7 +5,7 @@ import {
   UpdateUserSchemaType,
   User,
   VerifyUserSchemaType,
-} from "@/schema/user";
+} from '@/schema/user';
 import {
   addUser,
   deleteUser,
@@ -13,29 +13,33 @@ import {
   sendVerificationEmail,
   updateUser,
   verifyUser,
-} from "@/services/user-services";
-import { UserVerified } from "@/templates/user-verified";
-import { API_BASE_URL } from "@/utils/config";
-import { BackendError } from "@/utils/errors";
-import generateToken from "@/utils/jwt";
-import { render } from "@react-email/render";
-import argon2 from "argon2";
-import type { NextFunction, Request, Response } from "express";
+} from '@/services/user-services';
+import { UserVerified } from '@/templates/user-verified';
+import { API_BASE_URL } from '@/utils/config';
+import { BackendError } from '@/utils/errors';
+import generateToken from '@/utils/jwt';
+import { render } from '@react-email/render';
+import argon2 from 'argon2';
+import type { NextFunction, Request, Response } from 'express';
 
-export const handleUserLogin = async (req: Request, res: Response, next: NextFunction) => {
+export const handleUserLogin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { email, password } = req.body as LoginSchemaType;
     const user = await getUserByEmail(email);
 
     if (!user) {
-      throw new BackendError("User not found", 404);
+      throw new BackendError('User not found', 404);
     }
 
     const matchPassword = await argon2.verify(user.password, password, {
-      salt: Buffer.from(user.salt, "hex"),
+      salt: Buffer.from(user.salt, 'hex'),
     });
     if (!matchPassword) {
-      throw new BackendError("Invalid password", 401);
+      throw new BackendError('Invalid password', 401);
     }
 
     const token = generateToken(user.id);
@@ -52,16 +56,21 @@ const handleAddUser = async (req: Request, res: Response, next: NextFunction) =>
     const existingUser = await getUserByEmail(user.email);
 
     if (existingUser) {
-      throw new BackendError("User already exists", 409);
+      throw new BackendError('User already exists', 409);
     }
 
     const { user: addedUser, code } = await addUser(user);
 
-    const status = await sendVerificationEmail(API_BASE_URL, addedUser.name, addedUser.email, code);
+    const status = await sendVerificationEmail(
+      API_BASE_URL,
+      addedUser.name,
+      addedUser.email,
+      code
+    );
 
     if (status !== 200) {
       await deleteUser(addedUser.email);
-      throw new BackendError("Failed to signup user", 500);
+      throw new BackendError('Failed to signup user', 500);
     }
 
     res.status(201).json(addedUser);
@@ -74,15 +83,23 @@ const handleVerifyUser = async (req: Request, res: Response, next: NextFunction)
   try {
     const { email, code } = req.query as VerifyUserSchemaType;
     if (!code) {
-      throw new BackendError("No verification code provided", 400);
+      throw new BackendError('No verification code provided', 400);
     }
 
     await verifyUser(email, code);
-    const template = render(UserVerified({ status: "verified", message: "User verified successfully" }));
+    const template = render(
+      UserVerified({ status: 'verified', message: 'User verified successfully' })
+    );
     res.status(200).send(template);
   } catch (err) {
     if (err instanceof BackendError) {
-      const template = render(UserVerified({ status: "invalid", message: err.message, error: "Invalid Request" }));
+      const template = render(
+        UserVerified({
+          status: 'invalid',
+          message: err.message,
+          error: 'Invalid Request',
+        })
+      );
       res.status(err.code).send(template);
       return;
     }
@@ -97,12 +114,12 @@ const handleDeleteUser = async (req: Request, res: Response, next: NextFunction)
     const { user } = res.locals as { user: User };
 
     if (user.email !== email && !user.isAdmin) {
-      throw new BackendError("Non-admin users can only delete their own account", 401);
+      throw new BackendError('Non-admin users can only delete their own account', 401);
     }
 
     await deleteUser(email);
 
-    res.status(200).json({ message: "User deleted successfully" });
+    res.status(200).json({ message: 'User deleted successfully' });
   } catch (err) {
     next(err);
   }
@@ -110,7 +127,7 @@ const handleDeleteUser = async (req: Request, res: Response, next: NextFunction)
 
 export { handleAddUser, handleDeleteUser, handleVerifyUser };
 
-export const handleGetUser = async (req: Request, res: Response) => {
+export const handleGetUser = async (_req: Request, res: Response) => {
   const { user } = res.locals as { user: User };
 
   res.status(200).json({
@@ -126,7 +143,11 @@ export const handleGetUser = async (req: Request, res: Response) => {
   });
 };
 
-export const handleUpdateUser = async (req: Request, res: Response, next: NextFunction) => {
+export const handleUpdateUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { user } = res.locals as { user: User };
 
@@ -136,7 +157,7 @@ export const handleUpdateUser = async (req: Request, res: Response, next: NextFu
 
     res.status(200).json({
       user: updatedUser,
-      message: "User updated successfully",
+      message: 'User updated successfully',
       success: true,
     });
   } catch (err) {
