@@ -29,7 +29,7 @@ app.use(
 app.use(logger);
 
 app.get('/', (_req, res) => {
-  res.status(4040).json({
+  res.json({
     message: 'Welcome to the API',
   });
 });
