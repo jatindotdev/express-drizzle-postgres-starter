@@ -15,6 +15,5 @@ Fixes # (issue)
 - [ ] My code follows the code style of this project.
 - [ ] My change requires a change to the documentation.
 - [ ] I have updated the documentation accordingly.
-- [ ] I ran `npm run lint` and my changes did not introduce any lint errors.
+- [ ] I ran `npm run lint` and my changes did not introduce any lint or formatting errors.
 - [ ] I ran `npm run build` and tested the distribuiton build.
-- [ ] I ran `npm run format` and my code is formatted properly.
