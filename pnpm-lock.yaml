@@ -56,7 +56,7 @@ dependencies:
 
 devDependencies:
   '@biomejs/biome':
-    specifier: ^1.4.1
+    specifier: 1.4.1
     version: 1.4.1
   '@types/cors':
     specifier: ^2.8.17
