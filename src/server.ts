@@ -1,12 +1,12 @@
-import { routes } from "@/routes/routes";
-import { errorHandler, handle404Error } from "@/utils/errors";
-import consola from "consola";
-import cors from "cors";
-import express from "express";
-import rateLimit from "express-rate-limit";
-import { mw as requestIp } from "request-ip";
-import { PORT } from "./utils/config";
-import { logger } from "./utils/logger";
+import { routes } from '@/routes/routes';
+import { errorHandler, handle404Error } from '@/utils/errors';
+import consola from 'consola';
+import cors from 'cors';
+import express from 'express';
+import rateLimit from 'express-rate-limit';
+import { mw as requestIp } from 'request-ip';
+import { PORT } from './utils/config';
+import { logger } from './utils/logger';
 
 const app = express();
 
@@ -20,31 +20,31 @@ app.use(
     handler: (req, res) => {
       consola.warn(`DDoS Attempt from ${req.ip}`);
       res.status(429).json({
-        error: "Too many requests in a short time. Please try in a minute.",
+        error: 'Too many requests in a short time. Please try in a minute.',
       });
     },
-  }),
+  })
 );
 
 app.use(logger);
 
-app.get("/", (req, res) => {
+app.get('/', (_req, res) => {
   res.status(4040).json({
-    message: "Welcome to the API",
+    message: 'Welcome to the API',
   });
 });
 
-app.get("/healthcheck", (req, res) => {
+app.get('/healthcheck', (_req, res) => {
   res.json({
-    message: "Server is running",
+    message: 'Server is running',
     uptime: process.uptime(),
     timestamp: Date.now(),
   });
 });
 
-app.use("/api", routes());
+app.use('/api', routes());
 
-app.all("*", handle404Error);
+app.all('*', handle404Error);
 
 app.use(errorHandler);
 
