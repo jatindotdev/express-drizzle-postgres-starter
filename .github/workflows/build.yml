@@ -1,7 +1,6 @@
 name: Build
 
 on:
-  push:
   pull_request:
 
 jobs:
@@ -23,7 +22,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ env.BUN_CACHE }}
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-bun-
 
