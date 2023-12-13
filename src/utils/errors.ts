@@ -59,7 +59,13 @@ export const errorHandler = (
   }
 
   if (!message || !code) {
-    message = error instanceof Error ? error.message : 'Something went wrong';
+    if ((error as { code: string }).code === 'ECONNREFUSED') {
+      message = 'Database connection error';
+    } else if (error instanceof Error) {
+      message = error.message;
+    } else {
+      message = 'Something went wrong';
+    }
     resMessage = 'Something went wrong and we are working on it';
     code = 500;
   }
