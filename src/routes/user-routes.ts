@@ -14,11 +14,10 @@ import {
   loginSchema,
   verifyUserSchema,
 } from '@/schema/user';
+import { createRouter } from '@/utils/create';
 import { Router } from 'express';
 
-export function userRoutes() {
-  const router = Router();
-
+export default createRouter((router: Router) => {
   router.get('/', authenticate(), handleGetUser);
   router.get('/verify', validateRequest('query', verifyUserSchema), handleVerifyUser);
   router.post('/create', validateRequest('body', addUserSchema), handleAddUser);
@@ -30,6 +29,4 @@ export function userRoutes() {
     handleDeleteUser
   );
   router.put('/update', authenticate(), handleUpdateUser);
-
-  return router;
-}
+});

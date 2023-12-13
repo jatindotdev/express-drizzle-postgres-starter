@@ -3,39 +3,27 @@ import {
   getAllUsers,
   getAllVerifiedUsers,
 } from '@/services/admin-services';
-import type { Request, Response } from 'express';
+import { createHandler } from '@/utils/create';
 
-export const handleGetAllVerifiedUsers = async (_req: Request, res: Response) => {
-  try {
-    const users = await getAllVerifiedUsers();
-    res.status(200).json({
-      users,
-      success: true,
-    });
-  } catch (_err) {
-    res.status(500).json({ error: 'Something went wrong' });
-  }
-};
+export const handleGetAllVerifiedUsers = createHandler(async ({ res }) => {
+  const users = await getAllVerifiedUsers();
+  res.status(200).json({
+    success: true,
+    users,
+  });
+});
 
-export const handleGetAllUsers = async (_req: Request, res: Response) => {
-  try {
-    const users = await getAllUsers();
-    res.status(200).json({
-      users,
-      success: true,
-    });
-  } catch (_err) {
-    res.status(500).json({ error: 'Something went wrong' });
-  }
-};
+export const handleGetAllUsers = createHandler(async ({ res }) => {
+  const users = await getAllUsers();
+  res.status(200).json({
+    users,
+    success: true,
+  });
+});
 
-export const handleDeleteAllUnverifiedUsers = async (_req: Request, res: Response) => {
-  try {
-    const unverfiedUsersCount = await deleteAllUnverifiedUsers();
-    res.status(200).json({
-      message: `${unverfiedUsersCount} unverified users deleted successfully`,
-    });
-  } catch (_err) {
-    res.status(500).json({ error: 'Something went wrong' });
-  }
-};
+export const handleDeleteAllUnverifiedUsers = createHandler(async ({ res }) => {
+  const unverfiedUsersCount = await deleteAllUnverifiedUsers();
+  res.status(200).json({
+    message: `${unverfiedUsersCount} unverified users deleted successfully`,
+  });
+});
