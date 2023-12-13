@@ -1,12 +1,9 @@
+import adminRoutes from '@/routes/admin-routes';
+import userRoutes from '@/routes/user-routes';
+import { createRouter } from '@/utils/create';
 import { Router } from 'express';
-import { adminRoutes } from './admin-routes';
-import { userRoutes } from './user-routes';
 
-export function routes() {
-  const router = Router();
-
-  router.use('/admin', adminRoutes());
-  router.use('/user', userRoutes());
-
-  return router;
-}
+export default createRouter((router: Router) => {
+  router.use('/admin', adminRoutes);
+  router.use('/user', userRoutes);
+});

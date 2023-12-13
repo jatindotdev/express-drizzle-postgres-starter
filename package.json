@@ -36,6 +36,7 @@
     "@types/react": "^18.2.41",
     "@types/request-ip": "^0.0.41",
     "drizzle-kit": "^0.20.6",
+    "pg": "^8.11.3",
     "ts-patch": "^3.0.2",
     "tsc-watch": "^6.0.4",
     "tsx": "^4.6.2",

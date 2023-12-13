@@ -1,4 +1,4 @@
-import { routes } from '@/routes/routes';
+import routes from '@/routes/routes';
 import { errorHandler, handle404Error } from '@/utils/errors';
 import consola from 'consola';
 import cors from 'cors';
@@ -42,7 +42,7 @@ app.get('/healthcheck', (_req, res) => {
   });
 });
 
-app.use('/api', routes());
+app.use('/api', routes);
 
 app.all('*', handle404Error);
 

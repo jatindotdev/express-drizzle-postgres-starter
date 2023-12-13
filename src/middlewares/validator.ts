@@ -1,11 +1,10 @@
-import { handleValidationError } from '@/utils/errors';
-import type { NextFunction, Request, Response } from 'express';
+import { createHandler } from '@/utils/create';
 import { z } from 'zod';
 
 type RequestLocation = 'body' | 'params' | 'query';
 
 export const validateRequest = (location: RequestLocation, schema: z.AnyZodObject) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return createHandler(async ({ req, next }) => {
     let data: z.infer<typeof schema>;
     switch (location) {
       case 'body':
@@ -19,18 +18,7 @@ export const validateRequest = (location: RequestLocation, schema: z.AnyZodObjec
         break;
     }
 
-    try {
-      req[location] = await schema.parseAsync(data);
-      next();
-    } catch (err) {
-      if (err instanceof z.ZodError) {
-        const error = handleValidationError(err);
-        res.status(400).json({ error });
-      } else {
-        res.status(500).json({
-          error: 'Something went wrong',
-        });
-      }
-    }
-  };
+    req[location] = await schema.parseAsync(data);
+    next();
+  });
 };
