@@ -15,7 +15,6 @@ import {
   verifyUser,
 } from '@/services/user-services';
 import { UserVerified } from '@/templates/user-verified';
-import { API_BASE_URL } from '@/utils/config';
 import { createHandler } from '@/utils/create';
 import { BackendError } from '@/utils/errors';
 import generateToken from '@/utils/jwt';
@@ -53,7 +52,7 @@ export const handleAddUser = createHandler(async ({ req, res }) => {
   const { user: addedUser, code } = await addUser(user);
 
   const status = await sendVerificationEmail(
-    API_BASE_URL,
+    process.env.API_BASE_URL,
     addedUser.name,
     addedUser.email,
     code

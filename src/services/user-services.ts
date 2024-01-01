@@ -1,6 +1,5 @@
 import { UpdateUserSchemaType, users, type NewUser, type User } from '@/schema/user';
 import { VerificationEmail } from '@/templates/verification-email';
-import { API_BASE_URL, FROM_EMAIL, FROM_NAME } from '@/utils/config';
 import { db } from '@/utils/db';
 import { getEmailClient } from '@/utils/email';
 import { BackendError } from '@/utils/errors';
@@ -97,6 +96,7 @@ export const sendVerificationEmail = async (
 ) => {
   try {
     const client = getEmailClient();
+    const { FROM_NAME, FROM_EMAIL } = process.env;
 
     const emailHtml = render(VerificationEmail({ baseUrl, name, email, code }));
 
@@ -166,6 +166,7 @@ export const updateUser = async (
     });
 
   if (email && code) {
+    const { API_BASE_URL } = process.env;
     const status = await sendVerificationEmail(
       API_BASE_URL,
       updatedUser.name,

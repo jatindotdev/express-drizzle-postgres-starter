@@ -5,8 +5,10 @@ import cors from 'cors';
 import express from 'express';
 import rateLimit from 'express-rate-limit';
 import { mw as requestIp } from 'request-ip';
-import { PORT } from './utils/config';
 import { logger } from './utils/logger';
+import './utils/config';
+
+const { PORT } = process.env;
 
 const app = express();
 

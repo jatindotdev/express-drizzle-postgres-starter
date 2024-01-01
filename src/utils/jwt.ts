@@ -1,10 +1,11 @@
-import { JWT_SECRET } from '@/utils/config';
 import JWT from 'jsonwebtoken';
 import { BackendError } from './errors';
 
 const JWT_CONFIG: JWT.SignOptions = {
   expiresIn: '10m',
 };
+
+const { JWT_SECRET } = process.env;
 
 export default function generateToken(userId: string): string {
   return JWT.sign({ userId }, JWT_SECRET, JWT_CONFIG);
