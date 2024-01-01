@@ -1,6 +1,6 @@
 # Express-Drizzle-PostgreSQL-Starter
 
-A starter template for building REST APIs with Express, Drizzle ORM and PostgreSQL.
+A opinionated starter template for building REST APIs with Express, Drizzle ORM and PostgreSQL.
 
 ## Features
 
