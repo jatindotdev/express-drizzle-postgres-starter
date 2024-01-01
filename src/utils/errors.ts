@@ -21,18 +21,20 @@ type HttpErrorCode =
   | 'EXPECTATION_FAILED'
   | 'TEAPOT';
 
-type BackendErrorCode = 'VALIDATION_ERROR' | 'INTERNAL_ERROR';
+type BackendErrorCode = 'VALIDATION_ERROR' | 'USER_NOT_FOUND' | 'INVALID_PASSWORD';
 
-type ErrorCode = HttpErrorCode | BackendErrorCode;
+type ErrorCode = HttpErrorCode | BackendErrorCode | 'INTERNAL_ERROR';
 
-const getStatusFromErrorCode = (code: ErrorCode): number => {
+export const getStatusFromErrorCode = (code: ErrorCode): number => {
   switch (code) {
     case 'BAD_REQUEST':
     case 'VALIDATION_ERROR':
       return 400;
     case 'UNAUTHORIZED':
+    case 'INVALID_PASSWORD':
       return 401;
     case 'NOT_FOUND':
+    case 'USER_NOT_FOUND':
       return 404;
     case 'INTERNAL_ERROR':
       return 500;
@@ -69,6 +71,29 @@ const getStatusFromErrorCode = (code: ErrorCode): number => {
   }
 };
 
+export const getMessageFromErrorCode = (code: ErrorCode): string => {
+  switch (code) {
+    case 'BAD_REQUEST':
+      return 'The request is invalid.';
+    case 'VALIDATION_ERROR':
+      return 'The request contains invalid or missing fields.';
+    case 'UNAUTHORIZED':
+      return 'You are not authorized to access this resource.';
+    case 'NOT_FOUND':
+      return 'The requested resource was not found.';
+    case 'USER_NOT_FOUND':
+      return 'The user was not found.';
+    case 'INTERNAL_ERROR':
+      return 'An internal server error occurred.';
+    case 'CONFLICT':
+      return 'The request conflicts with the current state of the server.';
+    case 'INVALID_PASSWORD':
+      return 'The password is incorrect.';
+    default:
+      return 'An internal server error occurred.';
+  }
+};
+
 export const handleValidationError = (
   err: ZodError
 ): {
@@ -95,10 +120,18 @@ export const handleValidationError = (
 export class BackendError extends Error {
   code: ErrorCode;
   details?: unknown;
-  constructor(message: string, code: ErrorCode, details?: unknown) {
-    super(message);
+  constructor(
+    code: ErrorCode,
+    {
+      message,
+      details,
+    }: {
+      message?: string;
+      details?: unknown;
+    } = {}
+  ) {
+    super(message ?? getMessageFromErrorCode(code));
     this.code = code;
-    this.message = message;
     this.details = details;
   }
 }
@@ -139,24 +172,19 @@ export const errorHandler = (
 
   if (error instanceof ZodError) {
     code = 'VALIDATION_ERROR';
-    message = 'Invalid or missing fields in the request';
+    message = getMessageFromErrorCode(code);
     details = handleValidationError(error);
     statusCode = getStatusFromErrorCode(code);
   }
 
-  if (!message || !code) {
-    if ((error as { code: string }).code === 'ECONNREFUSED') {
-      message = 'The DB crashed maybe because they dont like you :p';
-      details = error;
-    } else if (error instanceof Error) {
-      message = error.message;
-    } else {
-      message = 'Something bad happened :/';
-    }
+  if ((error as { code: string }).code === 'ECONNREFUSED') {
     code = 'INTERNAL_ERROR';
-    statusCode = getStatusFromErrorCode(code);
+    message = 'The DB crashed maybe because they dont like you :p';
+    details = error;
   }
 
+  code = code ?? 'INTERNAL_ERROR';
+  message = message ?? getMessageFromErrorCode(code);
   details = details ?? error;
 
   consola.error(`${ip} [${method}] ${url} ${code} - ${message}`);

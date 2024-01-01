@@ -54,17 +54,21 @@ export const verifyUser = async (email: string, code: string): Promise<boolean> 
   const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
   if (!user) {
-    throw new BackendError('User not found', 404);
+    throw new BackendError('USER_NOT_FOUND');
   }
 
   if (user.isVerified) {
-    throw new BackendError('User already verified', 409);
+    throw new BackendError('CONFLICT', {
+      message: 'User already verified',
+    });
   }
 
   const isVerified = sha256.verify(code, user.code);
 
   if (!isVerified) {
-    throw new BackendError('Invalid verification code', 400);
+    throw new BackendError('UNAUTHORIZED', {
+      message: 'Invalid verification code',
+    });
   }
 
   const [updatedUser] = await db.update(users).set({ isVerified }).returning();
@@ -76,7 +80,7 @@ export const deleteUser = async (email: string) => {
   const user = await getUserByEmail(email);
 
   if (!user) {
-    throw new BackendError('User not found', 404);
+    throw new BackendError('USER_NOT_FOUND');
   }
 
   const [deletedUser] = await db.delete(users).where(eq(users.email, email)).returning({
@@ -139,7 +143,10 @@ export const updateUser = async (
     const user = await getUserByEmail(email);
 
     if (user) {
-      throw new BackendError('Email already in use', 409);
+      throw new BackendError('CONFLICT', {
+        message: 'Email already in use',
+        details: { email },
+      });
     }
 
     code = crypto.randomBytes(32).toString('hex');
@@ -180,7 +187,9 @@ export const updateUser = async (
         .set({ email: user.email, isVerified: user.isVerified })
         .where(eq(users.email, updatedUser.email))
         .returning();
-      throw new BackendError('Your email could not be updated', 400);
+      throw new BackendError('BAD_REQUEST', {
+        message: 'Email could not be updated',
+      });
     }
   }
 
