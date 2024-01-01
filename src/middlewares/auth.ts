@@ -12,13 +12,17 @@ export const authenticate = (
     const { authorization } = req.headers;
 
     if (!authorization) {
-      throw new BackendError('Authorization header not found', 401);
+      throw new BackendError('UNAUTHORIZED', {
+        message: 'Authorization header not found',
+      });
     }
 
     const token = authorization.split(' ')[1];
 
     if (!token) {
-      throw new BackendError('No token found', 401);
+      throw new BackendError('UNAUTHORIZED', {
+        message: 'Token not found',
+      });
     }
 
     const { userId } = verifyToken(token);
@@ -26,15 +30,19 @@ export const authenticate = (
     const user = await getUserByUserId(userId);
 
     if (!user) {
-      throw new BackendError('User not found', 404);
+      throw new BackendError('USER_NOT_FOUND');
     }
 
     if (!user.isVerified) {
-      throw new BackendError('User not verified', 401);
+      throw new BackendError('UNAUTHORIZED', {
+        message: 'User not verified',
+      });
     }
 
     if (verifyAdmin && !user.isAdmin) {
-      throw new BackendError('User not admin', 401);
+      throw new BackendError('UNAUTHORIZED', {
+        message: 'User not authorized',
+      });
     }
 
     res.locals.user = user;
