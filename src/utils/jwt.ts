@@ -18,9 +18,13 @@ export function verifyToken(token: string) {
     return data as { userId: string };
   } catch (err) {
     if (err instanceof JWT.TokenExpiredError) {
-      throw new BackendError('Token expired', 401);
+      throw new BackendError('UNAUTHORIZED', {
+        message: 'Token expired',
+      });
     }
 
-    throw new BackendError('Invalid token', 401);
+    throw new BackendError('UNAUTHORIZED', {
+      message: 'Invalid token',
+    });
   }
 }
