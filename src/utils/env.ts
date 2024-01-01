@@ -23,6 +23,10 @@ const configSchema = z.object({
   JWT_SECRET: z.string(),
 });
 
-configSchema.parse(process.env);
+try {
+  configSchema.parse(process.env);
+} catch {
+  process.exit(1);
+}
 
 export type Env = z.infer<typeof configSchema>;

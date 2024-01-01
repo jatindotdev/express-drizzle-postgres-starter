@@ -6,7 +6,7 @@ import express from 'express';
 import rateLimit from 'express-rate-limit';
 import { mw as requestIp } from 'request-ip';
 import { logger } from './utils/logger';
-import './utils/config';
+import './utils/env';
 
 const { PORT } = process.env;
 

@@ -3,26 +3,103 @@ import { NextFunction, Request, Response } from 'express';
 import { PostgresError } from 'postgres';
 import { ZodError } from 'zod';
 
-export const handleValidationError = (err: ZodError): string => {
-  const [firstError] = err.errors;
-  if (firstError.message.includes('Required')) {
-    const missingParams = err.errors.map(error => error.path).join(', ');
-    return `Missing required params: ${missingParams}`;
+type HttpErrorCode =
+  | 'BAD_REQUEST'
+  | 'UNAUTHORIZED'
+  | 'NOT_FOUND'
+  | 'METHOD_NOT_ALLOWED'
+  | 'NOT_ACCEPTABLE'
+  | 'REQUEST_TIMEOUT'
+  | 'CONFLICT'
+  | 'GONE'
+  | 'LENGTH_REQUIRED'
+  | 'PRECONDITION_FAILED'
+  | 'PAYLOAD_TOO_LARGE'
+  | 'URI_TOO_LONG'
+  | 'UNSUPPORTED_MEDIA_TYPE'
+  | 'RANGE_NOT_SATISFIABLE'
+  | 'EXPECTATION_FAILED'
+  | 'TEAPOT';
+
+type BackendErrorCode = 'VALIDATION_ERROR' | 'INTERNAL_ERROR';
+
+type ErrorCode = HttpErrorCode | BackendErrorCode;
+
+const getStatusFromErrorCode = (code: ErrorCode): number => {
+  switch (code) {
+    case 'BAD_REQUEST':
+    case 'VALIDATION_ERROR':
+      return 400;
+    case 'UNAUTHORIZED':
+      return 401;
+    case 'NOT_FOUND':
+      return 404;
+    case 'INTERNAL_ERROR':
+      return 500;
+    case 'METHOD_NOT_ALLOWED':
+      return 405;
+    case 'NOT_ACCEPTABLE':
+      return 406;
+    case 'REQUEST_TIMEOUT':
+      return 408;
+    case 'CONFLICT':
+      return 409;
+    case 'GONE':
+      return 410;
+    case 'LENGTH_REQUIRED':
+      return 411;
+    case 'PRECONDITION_FAILED':
+      return 412;
+    case 'PAYLOAD_TOO_LARGE':
+      return 413;
+    case 'URI_TOO_LONG':
+      return 414;
+    case 'UNSUPPORTED_MEDIA_TYPE':
+      return 415;
+    case 'RANGE_NOT_SATISFIABLE':
+      return 416;
+    case 'EXPECTATION_FAILED':
+      return 417;
+    case 'TEAPOT':
+      return 418; // I'm a teapot
+    case 'INTERNAL_ERROR':
+      return 500;
+    default:
+      return 500;
+  }
+};
+
+export const handleValidationError = (
+  err: ZodError
+): {
+  invalidFields: string[];
+  requiredFields: string[];
+} => {
+  let invalidFields = [];
+  let requiredFields = [];
+
+  for (const error of err.errors) {
+    if (error.code === 'invalid_type') {
+      invalidFields.push(error.path.join('.'));
+    } else if (error.message === 'Required') {
+      requiredFields.push(error.path.join('.'));
+    }
   }
 
-  if (firstError.message.includes('Invalid')) {
-    const [first] = err.errors;
-    return `Invalid params: ${first.path}`;
-  }
-
-  return err.errors[0].message;
+  return {
+    invalidFields,
+    requiredFields,
+  };
 };
 
 export class BackendError extends Error {
-  code: number;
-  constructor(message: string, code: number) {
+  code: ErrorCode;
+  details?: unknown;
+  constructor(message: string, code: ErrorCode, details?: unknown) {
     super(message);
     this.code = code;
+    this.message = message;
+    this.details = details;
   }
 }
 
@@ -30,57 +107,72 @@ export class BackendError extends Error {
 export const errorHandler = (
   error: unknown,
   req: Request,
-  res: Response,
+  res: Response<{
+    code: ErrorCode;
+    message: string;
+    details?: unknown;
+  }>,
   _next: NextFunction
 ) => {
+  let statusCode = 500;
+  let code: ErrorCode | undefined;
+  let message: string | undefined;
+  let details: unknown | undefined;
+
+  const ip = req.ip;
   const url = req.originalUrl;
   const method = req.method;
-  let resMessage: string | undefined;
-  let message: string | undefined;
-  let code: number | undefined;
-  const ip = req.ip;
 
   if (error instanceof BackendError) {
     message = error.message;
-    resMessage = error.message;
     code = error.code;
+    details = error.details;
+    statusCode = getStatusFromErrorCode(code);
   }
 
   if (error instanceof PostgresError) {
-    message = error.message;
-    resMessage = 'Something went wrong and we are working on it';
-    code = 500;
+    code = 'INTERNAL_ERROR';
+    message = 'The DB crashed maybe because they dont like you :p';
+    statusCode = getStatusFromErrorCode(code);
+    details = error;
   }
 
   if (error instanceof ZodError) {
-    message = handleValidationError(error);
-    resMessage = message;
-    code = 400;
+    code = 'VALIDATION_ERROR';
+    message = 'Invalid or missing fields in the request';
+    details = handleValidationError(error);
+    statusCode = getStatusFromErrorCode(code);
   }
 
   if (!message || !code) {
     if ((error as { code: string }).code === 'ECONNREFUSED') {
-      message = 'Database connection error';
+      message = 'The DB crashed maybe because they dont like you :p';
+      details = error;
     } else if (error instanceof Error) {
       message = error.message;
     } else {
-      message = 'Something went wrong';
+      message = 'Something bad happened :/';
     }
-    resMessage = 'Something went wrong and we are working on it';
-    code = 500;
+    code = 'INTERNAL_ERROR';
+    statusCode = getStatusFromErrorCode(code);
   }
+
+  details = details ?? error;
 
   consola.error(`${ip} [${method}] ${url} ${code} - ${message}`);
 
-  res.status(code).json({
-    success: false,
-    message: resMessage,
+  res.status(statusCode).json({
+    code,
+    message: message,
+    details,
   });
 };
 
 export const handle404Error = (_req: Request, res: Response) => {
-  res.status(404).json({
-    success: false,
+  let code: ErrorCode = 'NOT_FOUND';
+  res.status(getStatusFromErrorCode(code)).json({
+    code: code,
     message: 'Route not found',
+    details: 'The route you are trying to access does not exist',
   });
 };
