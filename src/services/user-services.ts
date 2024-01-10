@@ -1,21 +1,18 @@
-import { UpdateUserSchemaType, users, type NewUser, type User } from '@/schema/user';
-import { VerificationEmail } from '@/templates/verification-email';
+import { type UpdateUserSchemaType, users, type NewUser, type User } from '@/schema/user';
 import { db } from '@/utils/db';
-import { getEmailClient } from '@/utils/email';
+import { sendVerificationEmail } from '@/utils/email';
 import { BackendError } from '@/utils/errors';
 import { sha256 } from '@/utils/hash';
-import { SendEmailCommand } from '@aws-sdk/client-ses';
-import { render } from '@react-email/render';
 import argon2 from 'argon2';
 import crypto from 'crypto';
 import { eq } from 'drizzle-orm';
 
-export const getUserByUserId = async (userId: string): Promise<User | null> => {
+export const getUserByUserId = async (userId: string) => {
   const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
   return user;
 };
 
-export const getUserByEmail = async (email: string): Promise<User | null> => {
+export const getUserByEmail = async (email: string) => {
   const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
   return user;
 };
@@ -25,7 +22,6 @@ export const addUser = async (user: NewUser) => {
 
   const salt = crypto.randomBytes(32);
   const code = crypto.randomBytes(32).toString('hex');
-  const hashedCode = sha256.hash(code);
   const hashedPassword = await argon2.hash(password, {
     salt,
   });
@@ -35,8 +31,8 @@ export const addUser = async (user: NewUser) => {
     .values({
       ...userDetails,
       password: hashedPassword,
-      code: hashedCode,
       salt: salt.toString('hex'),
+      code,
     })
     .returning({
       id: users.id,
@@ -47,10 +43,16 @@ export const addUser = async (user: NewUser) => {
       isAdmin: users.isAdmin,
     });
 
+  if (!newUser) {
+    throw new BackendError('INTERNAL_ERROR', {
+      message: 'Failed to add user',
+    });
+  }
+
   return { user: newUser, code };
 };
 
-export const verifyUser = async (email: string, code: string): Promise<boolean> => {
+export const verifyUser = async (email: string, code: string) => {
   const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
   if (!user) {
@@ -71,9 +73,16 @@ export const verifyUser = async (email: string, code: string): Promise<boolean> 
     });
   }
 
-  const [updatedUser] = await db.update(users).set({ isVerified }).returning();
+  const [updatedUser] = await db
+    .update(users)
+    .set({ isVerified })
+    .where(eq(users.email, email));
 
-  return updatedUser.isVerified;
+  if (!updatedUser) {
+    throw new BackendError('INTERNAL_ERROR', {
+      message: 'Failed to verify user',
+    });
+  }
 };
 
 export const deleteUser = async (email: string) => {
@@ -90,46 +99,6 @@ export const deleteUser = async (email: string) => {
   });
 
   return deletedUser;
-};
-
-export const sendVerificationEmail = async (
-  baseUrl: string,
-  name: string,
-  email: string,
-  code: string
-) => {
-  try {
-    const client = getEmailClient();
-    const { FROM_NAME, FROM_EMAIL } = process.env;
-
-    const emailHtml = render(VerificationEmail({ baseUrl, name, email, code }));
-
-    const params = {
-      Source: `${FROM_NAME} <${FROM_EMAIL}>`,
-      Destination: {
-        ToAddresses: [email],
-      },
-      Message: {
-        Subject: {
-          Charset: 'UTF-8',
-          Data: 'Verify your email!',
-        },
-        Body: {
-          Html: {
-            Charset: 'UTF-8',
-            Data: emailHtml,
-          },
-        },
-      },
-    };
-
-    const command = new SendEmailCommand(params);
-
-    const res = await client.send(command);
-    return res.$metadata.httpStatusCode;
-  } catch (_err) {
-    return 500;
-  }
 };
 
 export const updateUser = async (
@@ -171,6 +140,12 @@ export const updateUser = async (
       isVerified: users.isVerified,
       createdAt: users.createdAt,
     });
+
+  if (!updatedUser) {
+    throw new BackendError('USER_NOT_FOUND', {
+      message: 'User could not be updated',
+    });
+  }
 
   if (email && code) {
     const { API_BASE_URL } = process.env;

@@ -32,7 +32,7 @@ app.use(logger);
 
 app.get('/', (_req, res) => {
   res.json({
-    message: 'Welcome to the API',
+    message: 'Welcome to the API!',
   });
 });
 

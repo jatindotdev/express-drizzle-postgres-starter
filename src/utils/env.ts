@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z, ZodError } from 'zod';
 import 'dotenv/config';
 
 const configSchema = z.object({
@@ -25,7 +25,10 @@ const configSchema = z.object({
 
 try {
   configSchema.parse(process.env);
-} catch {
+} catch (error) {
+  if (error instanceof ZodError) {
+    console.error(error.errors);
+  }
   process.exit(1);
 }
 
