@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { Router, type NextFunction, type Request, type Response } from 'express';
 
 export const createRouter = (callback: (router: Router) => void) => {
   const router = Router();

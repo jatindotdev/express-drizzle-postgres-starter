@@ -1,5 +1,5 @@
 import consola from 'consola';
-import { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 
 export const logger = (req: Request, _res: Response, next: NextFunction) => {
   const ip = req.ip;

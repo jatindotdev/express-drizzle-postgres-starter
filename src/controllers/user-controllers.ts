@@ -1,4 +1,4 @@
-import {
+import type {
   DeleteUserSchemaType,
   LoginSchemaType,
   NewUser,
@@ -10,12 +10,12 @@ import {
   addUser,
   deleteUser,
   getUserByEmail,
-  sendVerificationEmail,
   updateUser,
   verifyUser,
 } from '@/services/user-services';
 import { UserVerified } from '@/templates/user-verified';
 import { createHandler } from '@/utils/create';
+import { sendVerificationEmail } from '@/utils/email';
 import { BackendError, getStatusFromErrorCode } from '@/utils/errors';
 import generateToken from '@/utils/jwt';
 import { render } from '@react-email/render';

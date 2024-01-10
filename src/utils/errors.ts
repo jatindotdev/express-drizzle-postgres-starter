@@ -1,6 +1,6 @@
 import consola from 'consola';
-import { NextFunction, Request, Response } from 'express';
-import { PostgresError } from 'postgres';
+import type { NextFunction, Request, Response } from 'express';
+import postgres from 'postgres';
 import { ZodError } from 'zod';
 
 type HttpErrorCode =
@@ -36,8 +36,6 @@ export const getStatusFromErrorCode = (code: ErrorCode): number => {
     case 'NOT_FOUND':
     case 'USER_NOT_FOUND':
       return 404;
-    case 'INTERNAL_ERROR':
-      return 500;
     case 'METHOD_NOT_ALLOWED':
       return 405;
     case 'NOT_ACCEPTABLE':
@@ -163,7 +161,7 @@ export const errorHandler = (
     statusCode = getStatusFromErrorCode(code);
   }
 
-  if (error instanceof PostgresError) {
+  if (error instanceof postgres.PostgresError) {
     code = 'INTERNAL_ERROR';
     message = 'The DB crashed maybe because they dont like you :p';
     statusCode = getStatusFromErrorCode(code);
