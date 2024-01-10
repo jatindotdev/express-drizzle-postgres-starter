@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "build": "esbuild src/server.ts --bundle --outfile=build/server.js --platform=node --format=esm --packages=external",
-    "start": "node build/src/server.js",
+    "start": "node build/server.js",
     "dev": "run-p -sl dev:*",
     "dev:tsc": "tsc --watch --preserveWatchOutput",
     "dev:node": "node --watch build/server.js",
