@@ -1,4 +1,4 @@
-import { type UpdateUserSchemaType, users, type NewUser, type User } from '@/schema/user';
+import { users, type NewUser, type UpdateUser, type User } from '@/schema/user';
 import { db } from '@/utils/db';
 import { sendVerificationEmail } from '@/utils/email';
 import { BackendError } from '@/utils/errors';
@@ -101,10 +101,7 @@ export const deleteUser = async (email: string) => {
   return deletedUser;
 };
 
-export const updateUser = async (
-  user: User,
-  { name, email, password }: UpdateUserSchemaType
-) => {
+export const updateUser = async (user: User, { name, email, password }: UpdateUser) => {
   let code: string | undefined;
   let hashedCode: string | undefined;
 

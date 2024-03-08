@@ -1,10 +1,10 @@
-import type {
-  DeleteUserSchemaType,
-  LoginSchemaType,
-  NewUser,
-  UpdateUserSchemaType,
-  User,
-  VerifyUserSchemaType,
+import {
+  deleteUserSchema,
+  loginSchema,
+  newUserSchema,
+  updateUserSchema,
+  verifyUserSchema,
+  type User,
 } from '@/schema/user';
 import {
   addUser,
@@ -21,8 +21,8 @@ import generateToken from '@/utils/jwt';
 import { render } from '@react-email/render';
 import argon2 from 'argon2';
 
-export const handleUserLogin = createHandler(async ({ req, res }) => {
-  const { email, password } = req.body as LoginSchemaType;
+export const handleUserLogin = createHandler(loginSchema, async (req, res) => {
+  const { email, password } = req.body;
   const user = await getUserByEmail(email);
 
   if (!user) {
@@ -40,8 +40,8 @@ export const handleUserLogin = createHandler(async ({ req, res }) => {
   res.status(200).json({ token });
 });
 
-export const handleAddUser = createHandler(async ({ req, res }) => {
-  const user = req.body as NewUser;
+export const handleAddUser = createHandler(newUserSchema, async (req, res) => {
+  const user = req.body;
 
   const existingUser = await getUserByEmail(user.email);
 
@@ -70,9 +70,9 @@ export const handleAddUser = createHandler(async ({ req, res }) => {
   res.status(201).json(addedUser);
 });
 
-export const handleVerifyUser = createHandler(async ({ req, res }) => {
+export const handleVerifyUser = createHandler(verifyUserSchema, async (req, res) => {
   try {
-    const { email, code } = req.query as VerifyUserSchemaType;
+    const { email, code } = req.query;
 
     await verifyUser(email, code);
     const template = render(
@@ -95,8 +95,8 @@ export const handleVerifyUser = createHandler(async ({ req, res }) => {
   }
 });
 
-export const handleDeleteUser = createHandler(async ({ req, res }) => {
-  const { email } = req.body as DeleteUserSchemaType;
+export const handleDeleteUser = createHandler(deleteUserSchema, async (req, res) => {
+  const { email } = req.body;
 
   const { user } = res.locals as { user: User };
 
@@ -113,7 +113,7 @@ export const handleDeleteUser = createHandler(async ({ req, res }) => {
   });
 });
 
-export const handleGetUser = createHandler(async ({ res }) => {
+export const handleGetUser = createHandler(async (_req, res) => {
   const { user } = res.locals as { user: User };
 
   res.status(200).json({
@@ -128,10 +128,10 @@ export const handleGetUser = createHandler(async ({ res }) => {
   });
 });
 
-export const handleUpdateUser = createHandler(async ({ req, res }) => {
+export const handleUpdateUser = createHandler(updateUserSchema, async (req, res) => {
   const { user } = res.locals as { user: User };
 
-  const { name, password, email } = req.body as UpdateUserSchemaType;
+  const { name, password, email } = req.body;
 
   const updatedUser = await updateUser(user, { name, password, email });
 

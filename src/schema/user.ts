@@ -20,24 +20,53 @@ export const selectUserSchema = createSelectSchema(users, {
   email: schema =>
     schema.email.email().regex(/^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/i),
 });
-export const verifyUserSchema = selectUserSchema.pick({ email: true, code: true });
-export const deleteUserSchema = selectUserSchema.pick({ email: true });
-export const loginSchema = selectUserSchema.pick({ email: true, password: true });
-export const addUserSchema = selectUserSchema.pick({
-  name: true,
-  email: true,
-  password: true,
+
+export const verifyUserSchema = z.object({
+  query: selectUserSchema.pick({
+    email: true,
+    code: true,
+  }),
 });
-export const updateUserSchema = selectUserSchema.pick({
-  name: true,
-  password: true,
-  email: true,
+
+export const deleteUserSchema = z.object({
+  body: selectUserSchema.pick({
+    email: true,
+  }),
+});
+
+export const loginSchema = z.object({
+  body: selectUserSchema.pick({
+    email: true,
+    password: true,
+  }),
+});
+
+export const addUserSchema = z.object({
+  body: selectUserSchema.pick({
+    name: true,
+    email: true,
+    password: true,
+  }),
+});
+
+export const updateUserSchema = z.object({
+  body: selectUserSchema
+    .pick({
+      name: true,
+      email: true,
+      password: true,
+    })
+    .partial(),
+});
+
+export const newUserSchema = z.object({
+  body: selectUserSchema.pick({
+    name: true,
+    email: true,
+    password: true,
+  }),
 });
 
 export type User = InferSelectModel<typeof users>;
-export type NewUser = Pick<User, 'name' | 'email' | 'password'>;
-
-export type LoginSchemaType = z.infer<typeof loginSchema>;
-export type VerifyUserSchemaType = z.infer<typeof verifyUserSchema>;
-export type DeleteUserSchemaType = z.infer<typeof deleteUserSchema>;
-export type UpdateUserSchemaType = Partial<z.infer<typeof updateUserSchema>>;
+export type NewUser = z.infer<typeof newUserSchema>['body'];
+export type UpdateUser = z.infer<typeof updateUserSchema>['body'];

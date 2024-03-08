@@ -8,7 +8,7 @@ export const authenticate = (
     verifyAdmin: false,
   }
 ) => {
-  return createHandler(async ({ req, res, next }) => {
+  return createHandler(async (req, res, next) => {
     const { authorization } = req.headers;
 
     if (!authorization) {
@@ -46,7 +46,6 @@ export const authenticate = (
     }
 
     res.locals.user = user;
-
     next();
   });
 };
