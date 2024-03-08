@@ -76,7 +76,8 @@ export const verifyUser = async (email: string, code: string) => {
   const [updatedUser] = await db
     .update(users)
     .set({ isVerified })
-    .where(eq(users.email, email));
+    .where(eq(users.email, email))
+    .returning({ id: users.id });
 
   if (!updatedUser) {
     throw new BackendError('INTERNAL_ERROR', {
