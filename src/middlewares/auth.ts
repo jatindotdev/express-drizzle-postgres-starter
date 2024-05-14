@@ -3,11 +3,9 @@ import { createHandler } from '@/utils/create';
 import { BackendError } from '@/utils/errors';
 import { verifyToken } from '@/utils/jwt';
 
-export const authenticate = (
-  { verifyAdmin } = {
-    verifyAdmin: false,
-  }
-) => {
+export function authenticate({ verifyAdmin } = {
+  verifyAdmin: false,
+}) {
   return createHandler(async (req, res, next) => {
     const { authorization } = req.headers;
 
@@ -29,9 +27,8 @@ export const authenticate = (
 
     const user = await getUserByUserId(userId);
 
-    if (!user) {
+    if (!user)
       throw new BackendError('USER_NOT_FOUND');
-    }
 
     if (!user.isVerified) {
       throw new BackendError('UNAUTHORIZED', {
@@ -48,4 +45,4 @@ export const authenticate = (
     res.locals.user = user;
     next();
   });
-};
+}

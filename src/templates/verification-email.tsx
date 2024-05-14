@@ -20,12 +20,12 @@ interface VerificationEmailProps {
   code: string;
 }
 
-export const VerificationEmail = ({
+export function VerificationEmail({
   baseUrl,
   name,
   email,
   code,
-}: VerificationEmailProps) => {
+}: VerificationEmailProps) {
   const url = `${baseUrl}/user/verify?email=${email}&code=${code}`;
 
   return (
@@ -47,7 +47,11 @@ export const VerificationEmail = ({
           <Container className="border border-solid border-[#eaeaea] rounded mt-[40px] mb-[5px] mx-auto p-[20px] w-[465px]">
             <Section>
               <Heading>Verify your email!</Heading>
-              <Text className="text-lg">Hello {name}!,</Text>
+              <Text className="text-lg">
+                Hello
+                {name}
+                !,
+              </Text>
               <Text className="text-lg">
                 Thank you for signing up! Please click the button below to verify your
                 email address.
@@ -69,4 +73,4 @@ export const VerificationEmail = ({
       </Tailwind>
     </Html>
   );
-};
+}

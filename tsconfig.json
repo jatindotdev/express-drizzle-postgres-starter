@@ -1,27 +1,27 @@
 {
   "compilerOptions": {
-    /* Base Options: */
-    "esModuleInterop": true,
-    "skipLibCheck": true,
     "target": "es2022",
-    "verbatimModuleSyntax": true,
-    "allowJs": true,
-    "resolveJsonModule": true,
-    "moduleDetection": "force",
-    /* Strictness */
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    /* If NOT transpiling with TypeScript: */
-    "moduleResolution": "Bundler",
-    "module": "ESNext",
-    "noEmit": true,
-    /* If your code doesn't run in the DOM: */
-    "lib": ["es2022"],
     /* If you're using React: */
     "jsx": "react-jsx",
+    /* If your code doesn't run in the DOM: */
+    "lib": ["es2022"],
+    "moduleDetection": "force",
+    "module": "ESNext",
+    /* If NOT transpiling with TypeScript: */
+    "moduleResolution": "Bundler",
     /* Aliases */
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "resolveJsonModule": true,
+    "allowJs": true,
+    /* Strictness */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noEmit": true,
+    /* Base Options: */
+    "esModuleInterop": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true
   }
 }

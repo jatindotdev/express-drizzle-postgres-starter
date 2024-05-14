@@ -1,3 +1,4 @@
+import process from 'node:process';
 import JWT from 'jsonwebtoken';
 import { BackendError } from './errors';
 
@@ -16,7 +17,8 @@ export function verifyToken(token: string) {
     const data = JWT.verify(token, JWT_SECRET);
 
     return data as { userId: string };
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof JWT.TokenExpiredError) {
       throw new BackendError('UNAUTHORIZED', {
         message: 'Token expired',

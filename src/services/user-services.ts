@@ -1,23 +1,24 @@
-import { users, type NewUser, type UpdateUser, type User } from '@/schema/user';
+import process from 'node:process';
+import crypto from 'node:crypto';
+import argon2 from 'argon2';
+import { eq } from 'drizzle-orm';
+import { type NewUser, type UpdateUser, type User, users } from '@/schema/user';
 import { db } from '@/utils/db';
 import { sendVerificationEmail } from '@/utils/email';
 import { BackendError } from '@/utils/errors';
 import { sha256 } from '@/utils/hash';
-import argon2 from 'argon2';
-import crypto from 'crypto';
-import { eq } from 'drizzle-orm';
 
-export const getUserByUserId = async (userId: string) => {
+export async function getUserByUserId(userId: string) {
   const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
   return user;
-};
+}
 
-export const getUserByEmail = async (email: string) => {
+export async function getUserByEmail(email: string) {
   const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
   return user;
-};
+}
 
-export const addUser = async (user: NewUser) => {
+export async function addUser(user: NewUser) {
   const { password, ...userDetails } = user;
 
   const salt = crypto.randomBytes(32);
@@ -50,14 +51,13 @@ export const addUser = async (user: NewUser) => {
   }
 
   return { user: newUser, code };
-};
+}
 
-export const verifyUser = async (email: string, code: string) => {
+export async function verifyUser(email: string, code: string) {
   const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
-  if (!user) {
+  if (!user)
     throw new BackendError('USER_NOT_FOUND');
-  }
 
   if (user.isVerified) {
     throw new BackendError('CONFLICT', {
@@ -84,14 +84,13 @@ export const verifyUser = async (email: string, code: string) => {
       message: 'Failed to verify user',
     });
   }
-};
+}
 
-export const deleteUser = async (email: string) => {
+export async function deleteUser(email: string) {
   const user = await getUserByEmail(email);
 
-  if (!user) {
+  if (!user)
     throw new BackendError('USER_NOT_FOUND');
-  }
 
   const [deletedUser] = await db.delete(users).where(eq(users.email, email)).returning({
     id: users.id,
@@ -100,9 +99,9 @@ export const deleteUser = async (email: string) => {
   });
 
   return deletedUser;
-};
+}
 
-export const updateUser = async (user: User, { name, email, password }: UpdateUser) => {
+export async function updateUser(user: User, { name, email, password }: UpdateUser) {
   let code: string | undefined;
   let hashedCode: string | undefined;
 
@@ -151,7 +150,7 @@ export const updateUser = async (user: User, { name, email, password }: UpdateUs
       API_BASE_URL,
       updatedUser.name,
       updatedUser.email,
-      code
+      code,
     );
 
     if (status !== 200) {
@@ -167,4 +166,4 @@ export const updateUser = async (user: User, { name, email, password }: UpdateUs
   }
 
   return updatedUser;
-};
+}

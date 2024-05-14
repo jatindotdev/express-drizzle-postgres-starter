@@ -1,6 +1,6 @@
-name: "Feature Request"
+name: Feature Request
 description: Suggest a new API or an improvement of an existing API
-labels: ["feature request", "backend"]
+labels: [feature request, backend]
 body:
   - type: markdown
     attributes:

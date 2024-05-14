@@ -1,52 +1,49 @@
 {
-  "[javascript]": {
-    "editor.formatOnSave": true,
-    "editor.tabSize": 2,
-    "editor.defaultFormatter": "biomejs.biome"
+  // Enable the ESlint flat config support
+  // (remove this if your ESLint extension above v3.0.5)
+  "eslint.experimental.useFlatConfig": true,
+  "eslint.useFlatConfig": true,
+
+  // Disable the default formatter, use eslint instead
+  "prettier.enable": false,
+  "editor.formatOnSave": false,
+
+  // Auto fix
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "never"
   },
 
-  "[typescript]": {
-    "editor.formatOnSave": true,
-    "editor.tabSize": 2,
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  // Avoid relative imports
-  "typescript.preferences.importModuleSpecifier": "non-relative",
+  // Silent the stylistic rules in you IDE, but still auto fix them
+  "eslint.rules.customizations": [
+    { "rule": "style/*", "severity": "off" },
+    { "rule": "format/*", "severity": "off" },
+    { "rule": "*-indent", "severity": "off" },
+    { "rule": "*-spacing", "severity": "off" },
+    { "rule": "*-spaces", "severity": "off" },
+    { "rule": "*-order", "severity": "off" },
+    { "rule": "*-dangle", "severity": "off" },
+    { "rule": "*-newline", "severity": "off" },
+    { "rule": "*quotes", "severity": "off" },
+    { "rule": "*semi", "severity": "off" }
+  ],
 
-  "[typescriptreact]": {
-    "editor.formatOnSave": true,
-    "editor.tabSize": 2,
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-
-  "[javascriptreact]": {
-    "editor.formatOnSave": true,
-    "editor.tabSize": 2,
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-
-  "[json]": {
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-
-  "[jsonc]": {
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-
-  "[less]": {
-    "editor.formatOnSave": true
-  },
-
-  "[python]": {
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit",
-    },
-    "editor.defaultFormatter": "ms-python.black-formatter"
-  },
-
-  "[html]": {
-    "editor.formatOnSave": false
-  },
-  "typescript.tsdk": "node_modules/typescript/lib",
+  // Enable eslint for all supported languages
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue",
+    "html",
+    "markdown",
+    "json",
+    "jsonc",
+    "yaml",
+    "toml",
+    "xml",
+    "gql",
+    "graphql",
+    "astro"
+  ]
 }

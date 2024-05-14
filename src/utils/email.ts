@@ -1,10 +1,11 @@
-import { VerificationEmail } from '@/templates/verification-email';
+import process from 'node:process';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 import { render } from '@react-email/render';
+import { VerificationEmail } from '@/templates/verification-email';
 
 let client: SESClient;
 
-export const getEmailClient = () => {
+export function getEmailClient() {
   if (!client) {
     client = new SESClient({
       credentials: {
@@ -16,14 +17,9 @@ export const getEmailClient = () => {
   }
 
   return client;
-};
+}
 
-export const sendVerificationEmail = async (
-  baseUrl: string,
-  name: string,
-  email: string,
-  code: string
-) => {
+export async function sendVerificationEmail(baseUrl: string, name: string, email: string, code: string) {
   try {
     const client = getEmailClient();
     const { FROM_NAME, FROM_EMAIL } = process.env;
@@ -53,7 +49,8 @@ export const sendVerificationEmail = async (
 
     const res = await client.send(command);
     return res.$metadata.httpStatusCode;
-  } catch (_err) {
+  }
+  catch (_err) {
     return 500;
   }
-};
+}

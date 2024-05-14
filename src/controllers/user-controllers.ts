@@ -1,10 +1,14 @@
+import process from 'node:process';
+import { Buffer } from 'node:buffer';
+import { render } from '@react-email/render';
+import argon2 from 'argon2';
 import {
+  type User,
   deleteUserSchema,
   loginSchema,
   newUserSchema,
   updateUserSchema,
   verifyUserSchema,
-  type User,
 } from '@/schema/user';
 import {
   addUser,
@@ -18,23 +22,19 @@ import { createHandler } from '@/utils/create';
 import { sendVerificationEmail } from '@/utils/email';
 import { BackendError, getStatusFromErrorCode } from '@/utils/errors';
 import generateToken from '@/utils/jwt';
-import { render } from '@react-email/render';
-import argon2 from 'argon2';
 
 export const handleUserLogin = createHandler(loginSchema, async (req, res) => {
   const { email, password } = req.body;
   const user = await getUserByEmail(email);
 
-  if (!user) {
+  if (!user)
     throw new BackendError('USER_NOT_FOUND');
-  }
 
   const matchPassword = await argon2.verify(user.password, password, {
     salt: Buffer.from(user.salt, 'hex'),
   });
-  if (!matchPassword) {
+  if (!matchPassword)
     throw new BackendError('INVALID_PASSWORD');
-  }
 
   const token = generateToken(user.id);
   res.status(200).json({ token });
@@ -57,7 +57,7 @@ export const handleAddUser = createHandler(newUserSchema, async (req, res) => {
     process.env.API_BASE_URL,
     addedUser.name,
     addedUser.email,
-    code
+    code,
   );
 
   if (status !== 200) {
@@ -76,17 +76,18 @@ export const handleVerifyUser = createHandler(verifyUserSchema, async (req, res)
 
     await verifyUser(email, code);
     const template = render(
-      UserVerified({ status: 'verified', message: 'User verified successfully' })
+      UserVerified({ status: 'verified', message: 'User verified successfully' }),
     );
     res.status(200).send(template);
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof BackendError) {
       const template = render(
         UserVerified({
           status: 'invalid',
           message: err.message,
           error: 'Invalid Request',
-        })
+        }),
       );
       res.status(getStatusFromErrorCode(err.code)).send(template);
       return;

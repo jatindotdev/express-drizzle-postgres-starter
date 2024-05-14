@@ -18,10 +18,9 @@ interface UserVerifiedProps {
   error?: string;
 }
 
-export const UserVerified = ({ status, message, error }: UserVerifiedProps) => {
-  if (!error) {
+export function UserVerified({ status, message, error }: UserVerifiedProps) {
+  if (!error)
     error = 'Unknown error';
-  }
 
   return (
     <Html lang="en">
@@ -52,9 +51,7 @@ export const UserVerified = ({ status, message, error }: UserVerifiedProps) => {
       <Tailwind>
         <Body className="bg-white my-auto mx-auto font-sans">
           <Container
-            className={
-              'border border-solid border-[#eaeaea] rounded mt-[40px] mb-[5px] mx-auto p-[20px] w-[465px] rounded-lg'
-            }
+            className="border border-solid border-[#eaeaea] rounded mt-[40px] mb-[5px] mx-auto p-[20px] w-[465px] rounded-lg"
           >
             <Section>
               <Heading>
@@ -71,4 +68,4 @@ export const UserVerified = ({ status, message, error }: UserVerifiedProps) => {
       </Tailwind>
     </Html>
   );
-};
+}

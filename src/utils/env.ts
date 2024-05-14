@@ -1,4 +1,5 @@
-import { z, ZodError } from 'zod';
+import process from 'node:process';
+import { ZodError, z } from 'zod';
 import 'dotenv/config';
 
 const configSchema = z.object({
@@ -13,7 +14,7 @@ const configSchema = z.object({
     .url()
     .refine(
       url => url.startsWith('postgres://') || url.startsWith('postgresql://'),
-      'DB_URL must be a valid postgresql url'
+      'DB_URL must be a valid postgresql url',
     ),
   FROM_NAME: z.string().default('Verify'),
   FROM_EMAIL: z.string().email(),
@@ -25,10 +26,11 @@ const configSchema = z.object({
 
 try {
   configSchema.parse(process.env);
-} catch (error) {
-  if (error instanceof ZodError) {
+}
+catch (error) {
+  if (error instanceof ZodError)
     console.error(error.errors);
-  }
+
   process.exit(1);
 }
 

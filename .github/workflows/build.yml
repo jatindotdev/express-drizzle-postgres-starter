@@ -2,9 +2,8 @@ name: Build
 
 on:
   pull_request:
-    paths: [
-      "src/**",
-    ]
+    paths:
+      - 'src/**'
 
 jobs:
   build:

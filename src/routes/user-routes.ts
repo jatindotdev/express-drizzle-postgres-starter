@@ -1,3 +1,4 @@
+import type { Router } from 'express';
 import {
   handleAddUser,
   handleDeleteUser,
@@ -8,7 +9,6 @@ import {
 } from '@/controllers/user-controllers';
 import { authenticate } from '@/middlewares/auth';
 import { createRouter } from '@/utils/create';
-import { Router } from 'express';
 
 export default createRouter((router: Router) => {
   router.get('/', authenticate(), handleGetUser);

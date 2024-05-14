@@ -1,11 +1,12 @@
-import routes from '@/routes/routes';
-import { errorHandler, handle404Error } from '@/utils/errors';
+import process from 'node:process';
 import consola from 'consola';
 import cors from 'cors';
 import express from 'express';
 import rateLimit from 'express-rate-limit';
 import { mw as requestIp } from 'request-ip';
 import { logger } from './utils/logger';
+import { errorHandler, handle404Error } from '@/utils/errors';
+import routes from '@/routes/routes';
 import './utils/env';
 
 const { PORT } = process.env;
@@ -25,7 +26,7 @@ app.use(
         error: 'Too many requests in a short time. Please try in a minute.',
       });
     },
-  })
+  }),
 );
 
 app.use(logger);

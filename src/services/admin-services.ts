@@ -1,8 +1,8 @@
+import { and, eq } from 'drizzle-orm';
 import { users } from '@/schema/user';
 import { db } from '@/utils/db';
-import { and, eq } from 'drizzle-orm';
 
-export const getAllVerifiedUsers = async () => {
+export async function getAllVerifiedUsers() {
   return await db
     .select({
       id: users.id,
@@ -14,9 +14,9 @@ export const getAllVerifiedUsers = async () => {
     })
     .from(users)
     .where(and(eq(users.isVerified, true), eq(users.isAdmin, false)));
-};
+}
 
-export const getAllUsers = async () => {
+export async function getAllUsers() {
   return await db
     .select({
       id: users.id,
@@ -27,12 +27,12 @@ export const getAllUsers = async () => {
       createdAt: users.createdAt,
     })
     .from(users);
-};
+}
 
-export const deleteAllUnverifiedUsers = async () => {
+export async function deleteAllUnverifiedUsers() {
   const deletedUsers = await db
     .delete(users)
     .where(eq(users.isVerified, false))
     .returning();
   return deletedUsers.length;
-};
+}

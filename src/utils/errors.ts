@@ -25,7 +25,7 @@ type BackendErrorCode = 'VALIDATION_ERROR' | 'USER_NOT_FOUND' | 'INVALID_PASSWOR
 
 type ErrorCode = HttpErrorCode | BackendErrorCode | 'INTERNAL_ERROR';
 
-export const getStatusFromErrorCode = (code: ErrorCode): number => {
+export function getStatusFromErrorCode(code: ErrorCode): number {
   switch (code) {
     case 'BAD_REQUEST':
     case 'VALIDATION_ERROR':
@@ -67,9 +67,9 @@ export const getStatusFromErrorCode = (code: ErrorCode): number => {
     default:
       return 500;
   }
-};
+}
 
-export const getMessageFromErrorCode = (code: ErrorCode): string => {
+export function getMessageFromErrorCode(code: ErrorCode): string {
   switch (code) {
     case 'BAD_REQUEST':
       return 'The request is invalid.';
@@ -90,30 +90,27 @@ export const getMessageFromErrorCode = (code: ErrorCode): string => {
     default:
       return 'An internal server error occurred.';
   }
-};
+}
 
-export const handleValidationError = (
-  err: ZodError
-): {
+export function handleValidationError(err: ZodError): {
   invalidFields: string[];
   requiredFields: string[];
-} => {
-  let invalidFields = [];
-  let requiredFields = [];
+} {
+  const invalidFields = [];
+  const requiredFields = [];
 
   for (const error of err.errors) {
-    if (error.code === 'invalid_type') {
+    if (error.code === 'invalid_type')
       invalidFields.push(error.path.join('.'));
-    } else if (error.message === 'Required') {
+    else if (error.message === 'Required')
       requiredFields.push(error.path.join('.'));
-    }
   }
 
   return {
     invalidFields,
     requiredFields,
   };
-};
+}
 
 export class BackendError extends Error {
   code: ErrorCode;
@@ -126,7 +123,7 @@ export class BackendError extends Error {
     }: {
       message?: string;
       details?: unknown;
-    } = {}
+    } = {},
   ) {
     super(message ?? getMessageFromErrorCode(code));
     this.code = code;
@@ -134,17 +131,11 @@ export class BackendError extends Error {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const errorHandler = (
-  error: unknown,
-  req: Request,
-  res: Response<{
-    code: ErrorCode;
-    message: string;
-    details?: unknown;
-  }>,
-  _next: NextFunction
-) => {
+export function errorHandler(error: unknown, req: Request, res: Response<{
+  code: ErrorCode;
+  message: string;
+  details?: unknown;
+}>, _next: NextFunction) {
   let statusCode = 500;
   let code: ErrorCode | undefined;
   let message: string | undefined;
@@ -189,16 +180,16 @@ export const errorHandler = (
 
   res.status(statusCode).json({
     code,
-    message: message,
+    message,
     details,
   });
-};
+}
 
-export const handle404Error = (_req: Request, res: Response) => {
-  let code: ErrorCode = 'NOT_FOUND';
+export function handle404Error(_req: Request, res: Response) {
+  const code: ErrorCode = 'NOT_FOUND';
   res.status(getStatusFromErrorCode(code)).json({
-    code: code,
+    code,
     message: 'Route not found',
     details: 'The route you are trying to access does not exist',
   });
-};
+}

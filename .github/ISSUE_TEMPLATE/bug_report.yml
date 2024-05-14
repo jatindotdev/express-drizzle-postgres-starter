@@ -1,6 +1,6 @@
-name: "Bug Report"
+name: Bug Report
 description: Report a reproducible bug
-labels: ["bug", "backend"]
+labels: [bug, backend]
 body:
   - type: markdown
     attributes:

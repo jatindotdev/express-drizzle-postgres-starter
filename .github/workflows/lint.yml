@@ -2,9 +2,8 @@ name: Code quality
 
 on:
   pull_request:
-    paths: [
-      'src/**',
-    ]
+    paths:
+      - 'src/**'
 
 jobs:
   quality:

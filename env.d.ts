@@ -1,5 +1,4 @@
-import { Env } from '@/utils/env';
-import type { Response } from 'express';
+import type { Env } from '@/utils/env';
 
 declare global {
   namespace NodeJS {

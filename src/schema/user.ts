@@ -18,7 +18,7 @@ export const users = pgTable('users', {
 
 export const selectUserSchema = createSelectSchema(users, {
   email: schema =>
-    schema.email.email().regex(/^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/i),
+    schema.email.email().regex(/^([\w.%-]+@[a-z0-9.-]+\.[a-z]{2,6})*$/i),
 });
 
 export const verifyUserSchema = z.object({

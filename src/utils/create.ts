@@ -1,11 +1,11 @@
-import { Router, type NextFunction, type Request, type Response } from 'express';
-import { z } from 'zod';
+import { type NextFunction, type Request, type Response, Router } from 'express';
+import type { z } from 'zod';
 
-export const createRouter = (callback: (router: Router) => void) => {
+export function createRouter(callback: (router: Router) => void) {
   const router = Router();
   callback(router);
   return router;
-};
+}
 
 export function createHandler<T extends z.ZodType>(
   schema: T,
@@ -28,7 +28,7 @@ export function createHandler<T extends z.ZodType>(
     req: Omit<Request, keyof z.output<T>> & z.output<T>,
     res: Response,
     next: NextFunction
-  ) => void | Promise<void>
+  ) => void | Promise<void>,
 ) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -36,7 +36,8 @@ export function createHandler<T extends z.ZodType>(
         const schema = schemaOrHandler as T;
         schema.parse(req);
         await handler(req, res, next);
-      } else {
+      }
+      else {
         const handler = schemaOrHandler as (
           req: Request,
           res: Response,
@@ -44,7 +45,8 @@ export function createHandler<T extends z.ZodType>(
         ) => void | Promise<void>;
         await handler(req, res, next);
       }
-    } catch (error) {
+    }
+    catch (error) {
       next(error);
     }
   };
